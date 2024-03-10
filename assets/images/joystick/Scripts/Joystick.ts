@@ -16,8 +16,8 @@ const { ccclass, property } = _decorator;
 export class Joystick extends Component {
   @property(Node)
   stick: Node = null;
-  @property
-  text: string = "hello";
+  @property(Label)
+  infoLabel: Label = null;
   @property
   maxRadius: number = 100; // Adjust based on your needs
 
@@ -33,7 +33,25 @@ export class Joystick extends Component {
     const xyz = v3(screen_pos.x, screen_pos.y, 0);
     const pos = this.node.getComponent(UITransform).convertToNodeSpaceAR(xyz);
     console.log(pos);
+    const length = pos.length();
+    console.log(length);
+    if (length <= 0) {
+      this.stick.setPosition(pos);
+      return;
+    }
+
+    if (length > this.maxRadius) {
+      pos.x = (pos.x * this.maxRadius) / length;
+      pos.y = (pos.y * this.maxRadius) / length;
+    }
+
     this.stick.setPosition(pos);
+    // Now use the infoLabel to display the position and length
+    if (this.infoLabel) {
+      this.infoLabel.string = `Pos: ${pos.toString()} \nLength: ${length.toFixed(
+        2
+      )}`;
+    }
   }
   private on_stick_end(event: EventTouch) {
     console.log("on_stick_end", event);
