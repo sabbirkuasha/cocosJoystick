@@ -28,6 +28,10 @@ export class Joystick extends Component {
 
   protected onLoad(): void {
     this.stick.setPosition(0, 0);
+    this.registerEventListeners();
+  }
+
+  private registerEventListeners() {
     this.node.on(Node.EventType.TOUCH_MOVE, this.on_stick_move, this);
     this.node.on(Node.EventType.TOUCH_END, this.on_stick_end, this);
     this.node.on(Node.EventType.TOUCH_CANCEL, this.on_stick_cancel, this);
@@ -45,10 +49,9 @@ export class Joystick extends Component {
       return;
     }
 
-    this.dir.x = pos.x / length; //cos
-    this.dir.y = pos.y / length; //sin
+    this.updateDirection(pos, length);
 
-    console.log("the dir Data: ", this.dir.x, this.dir.y);
+    // console.log("the dir Data: ", this.dir.x, this.dir.y);
 
     if (length > this.maxRadius) {
       pos.x = (pos.x * this.maxRadius) / length;
@@ -58,19 +61,29 @@ export class Joystick extends Component {
     this.stick.setPosition(pos);
 
     // Now use the infoLabel to display the position and length
+    this.updateInfoLabel(pos, length);
+  }
+
+  private updateInfoLabel(pos: Vec3, length: number) {
     if (this.infoLabel) {
       this.infoLabel.string = `Pos: ${pos.toString()} \nLength: ${length.toFixed(
         2
       )}`;
     }
   }
+
+  private updateDirection(pos: Vec3, length: number) {
+    this.dir.x = pos.x / length;
+    this.dir.y = pos.y / length;
+  }
+
   private on_stick_end(event: EventTouch) {
-    console.log("on_stick_end", event);
+    // console.log("on_stick_end", event);
     this.stick.setPosition(0, 0);
     this.resetDirection();
   }
   private on_stick_cancel(event: EventTouch) {
-    console.log("on_stick_cancel", event);
+    // console.log("on_stick_cancel", event);
     this.stick.setPosition(0, 0);
     this.resetDirection();
     // console.log(event);
@@ -87,7 +100,7 @@ export class Joystick extends Component {
   }
 
   start() {
-    console.log("Hello from on Start");
+    // console.log("Hello from on Start");
   }
 
   update(deltaTime: number) {}
