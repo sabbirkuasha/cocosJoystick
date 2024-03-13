@@ -17,7 +17,7 @@ export class GameManager extends Component {
   onLoad() {
     console.log(PhysicsSystem2D.instance);
     PhysicsSystem2D.instance.enable = true;
-    // PhysicsSystem2D.instance.gravity = this.gravity;
+    PhysicsSystem2D.instance.gravity = this.gravity;
   }
 
   start() {}
